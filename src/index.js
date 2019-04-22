@@ -46,27 +46,27 @@ class Client {
     });
   }
 
-  async add(entry, attributes) {
+  add(entry, attributes) {
     assert.string(entry, 'entry');
     assert.object(attributes, 'attributes');
 
     return this._send(new Add({ entry, attributes: Attribute.fromObject(attributes) }));
   }
 
-  async bind(name, credentials) {
+  bind(name, credentials) {
     assert.string(name, 'name');
     assert.optionalString(credentials, 'credentials');
 
     return this._send(new Bind({ name, credentials }));
   }
 
-  async del(entry) {
+  del(entry) {
     assert.string(entry, 'entry');
 
     return this._send(new Del({ entry }));
   }
 
-  async modify(entry, change) {
+  modify(entry, change) {
     assert.string(entry, 'entry');
     assert.object(change, 'change');
 
@@ -76,7 +76,7 @@ class Client {
     return this._send(new Modify({ entry, changes }));
   }
 
-  async modifyDN(entry, newName) {
+  modifyDN(entry, newName) {
     assert.string(entry, 'entry');
     assert.string(newName, 'newName');
 
@@ -89,7 +89,7 @@ class Client {
     }
   }
 
-  async search(baseObject, options) {
+  search(baseObject, options) {
     assert.string(baseObject, 'baseObject');
     assert.object(options, 'options');
     assert.optionalString(options.scope, 'options.scope');
@@ -101,11 +101,11 @@ class Client {
     return this._send(new Search(Object.assign({ baseObject }, options)));
   }
 
-  async unbind() {
+  unbind() {
     return this._send(new Unbind());
   }
 
-  async destroy() {
+  destroy() {
     if (this._socket) {
       this._socket.removeAllListeners('error');
       this._socket.removeAllListeners('close');
@@ -125,7 +125,7 @@ class Client {
     }
   }
 
-  async _connect() {
+  _connect() {
     return new Promise((resolve, reject) => {
       const destroy = () => {
         if (this._socket) {
@@ -159,11 +159,18 @@ class Client {
     });
   }
 
-  async _send(message) {
+  _send(message) {
     if (!this._socket) {
-      await this._connect();
+      var self = this;
+      return this._connect().then(() => {
+        return self._sendInternal(message);
+      })
+    } else {
+      return this._sendInternal(message);
     }
+  }
 
+  _sendInternal(message) {
     return new Promise((resolve, reject) => {
       try {
         this._queue.set(message.id, { resolve, reject, request: message, result: [] });
@@ -183,11 +190,15 @@ class Client {
           }, this.timeout);
         }
       } catch (e) {
+        console.log(e);
         this._queue.delete(message.id);
         reject(e);
       }
     });
+
   }
+
 }
+
 
 module.exports = Client;
