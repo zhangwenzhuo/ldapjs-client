@@ -3,7 +3,7 @@ const DaoB = require('./DaoB');
 
 
 //CASE A , put the  condition as property of the data model rather than method parameter,
-// for differnece condition for the same domain model, have to create each instance for each query condition, this is not good pattern because will create too much instance.
+// for differnece condition for the same domain model, have to create each instance for each query condition, this is not good pattern because will create too much unnessary instance.
 let daoa = new DAOA("A1");
 let a1Data = daoa.getData();
 console.log(a1Data);
@@ -28,7 +28,7 @@ for (var i = 0; i < 10; i++) {
 }
 
 
-// CASE B  WORK in sequencial execution order...
+// CASE B  WORK in sequencial execution order... however, not efficiency in some concurrency pattern And very error prone
 let data;
 (async function () {
     for (var i = 0; i < 10; i++) {
