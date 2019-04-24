@@ -28,7 +28,7 @@ for (var i = 0; i < 10; i++) {
 }
 
 
-// CASE B  ONLY WORK in sequencial execution order...
+// CASE B  WORK in sequencial execution order...
 let data;
 (async function () {
     for (var i = 0; i < 10; i++) {
@@ -38,3 +38,14 @@ let data;
         console.log(data);
     }
 })();
+
+
+// CASE B   WORK use new instance for each condition ==> have the same issue with the CASE A
+for (var i = 0; i < 10; i++) {
+    new DaoB().getData("A" + i, 10).catch(function (error) {
+        console.log(error);
+    }).then(function (data) {
+        console.log(data);
+    });
+}
+
