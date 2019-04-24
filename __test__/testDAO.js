@@ -6,15 +6,16 @@ const DaoB = require('./DaoB');
 // for differnece condition for the same domain model, have to create each instance for each query condition, this is not good pattern because will create too much instance.
 let daoa = new DAOA("A1");
 let a1Data = daoa.getData();
+console.log(a1Data);
 
 
 let daob = new DAOA("A2");
 let a2Data = daob.getData();
-
+console.log(a2Data);
 
 let daoc = new DAOA("A3");
 let a3Data = daoc.getData();
-
+console.log(a3Data);
 
 //CASE B, use condition as parameter and create only one instance during query
 // this will cause original condition value will be changed by the subsequence call,and this pattern will fail if want to execute in concurrency way.
